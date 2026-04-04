@@ -44,7 +44,16 @@ export async function POST(req: NextRequest) {
                 user_id: userId,
                 report_name: result.structured.report_name,
                 lab_name: result.structured.lab_name,
-                report_date: result.structured.report_date,
+                report_date: (() => {
+        const d = result.structured.report_date
+        if (!d) return null
+        // Convert DD/MM/YYYY to YYYY-MM-DD
+        const parts = d.split('/')
+        if (parts.length === 3 && parts[0].length <= 2) {
+          return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`
+        }
+        return d
+      })(),
                 raw_text: result.raw_text,
                 parameters: result.structured.parameters,
                 ai_explanation: result.explanation_en,
