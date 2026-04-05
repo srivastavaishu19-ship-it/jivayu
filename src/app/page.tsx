@@ -98,12 +98,12 @@ export default function Dashboard() {
     finally { setPredLoading(false) }
   }
 
-  async function markTaken(id: string) {
+  async function markStatus(id: string, status: 'taken' | 'missed') {
     try {
       await fetch('/api/medicine-log', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ medicine_id: id, user_id: TEST_USER, status: 'taken', scheduled_time: new Date().toLocaleTimeString() })
+        body: JSON.stringify({ medicine_id: id, user_id: TEST_USER, status: status, scheduled_time: new Date().toLocaleTimeString() })
       })
     } catch (e) { }
   }
@@ -214,7 +214,7 @@ export default function Dashboard() {
                         <div style={{ fontSize: '13px', fontWeight: '600' }}>{m.name}</div>
                         <div style={{ fontSize: '11px', color: t.text2 }}>{m.dosage} · {m.frequency}</div>
                       </div>
-                      <button onClick={() => markTaken(m.id)} style={{ background: 'rgba(74,222,128,0.1)', color: t.accent, border: '1px solid rgba(74,222,128,0.25)', borderRadius: '8px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: '600', fontFamily: 'inherit' }}>✓ Taken</button>
+                      <button onClick={() => markStatus(m.id, 'taken')} style={{ background: 'rgba(74,222,128,0.1)', color: t.accent, border: '1px solid rgba(74,222,128,0.25)', borderRadius: '8px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: '600', fontFamily: 'inherit' }}>✓ Taken</button>
                     </div>
                   ))}
                 </div>
@@ -369,7 +369,7 @@ export default function Dashboard() {
                     {m.condition_for && <div style={{ fontSize: '11px', color: t.accent, marginBottom: '2px' }}>For: {m.condition_for}</div>}
                     {m.prescribed_by && <div style={{ fontSize: '11px', color: t.text2, marginBottom: '14px' }}>Dr: {m.prescribed_by}</div>}
                     <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                      <button onClick={() => markTaken(m.id)} style={{ flex: 1, background: 'rgba(74,222,128,0.1)', color: t.accent, border: '1px solid rgba(74,222,128,0.2)', borderRadius: '8px', padding: '9px', fontSize: '12px', cursor: 'pointer', fontWeight: '700', fontFamily: 'inherit' }}>✓ Mark Taken</button>
+                      <button onClick={() => markStatus(m.id, 'taken')} style={{ flex: 1, background: 'rgba(74,222,128,0.1)', color: t.accent, border: '1px solid rgba(74,222,128,0.2)', borderRadius: '8px', padding: '9px', fontSize: '12px', cursor: 'pointer', fontWeight: '700', fontFamily: 'inherit' }}>✓ Mark Taken</button>
                       <button style={{ background: 'rgba(239,68,68,0.1)', color: t.danger, border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '9px 13px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}>✗</button>
                     </div>
                   </div>
