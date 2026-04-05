@@ -370,7 +370,7 @@ export default function Dashboard() {
                     {m.prescribed_by && <div style={{ fontSize: '11px', color: t.text2, marginBottom: '14px' }}>Dr: {m.prescribed_by}</div>}
                     <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
                       <button onClick={() => markStatus(m.id, 'taken')} style={{ flex: 1, background: 'rgba(74,222,128,0.1)', color: t.accent, border: '1px solid rgba(74,222,128,0.2)', borderRadius: '8px', padding: '9px', fontSize: '12px', cursor: 'pointer', fontWeight: '700', fontFamily: 'inherit' }}>✓ Mark Taken</button>
-                      <button style={{ background: 'rgba(239,68,68,0.1)', color: t.danger, border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '9px 13px', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}>✗</button>
+                      <button onClick={() => markStatus(m.id, 'missed')} style={{flex:1, background:'rgba(239,68,68,0.1)', color:t.danger, border:'1px solid rgba(239,68,68,0.2)', borderRadius:'8px', padding:'9px', fontSize:'12px', cursor:'pointer', fontWeight:'700', fontFamily:'inherit'}}>✗ Missed</button>
                     </div>
                   </div>
                 ))}
