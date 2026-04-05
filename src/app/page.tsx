@@ -9,6 +9,8 @@ export default function Dashboard() {
   const [healthScore, setHealthScore] = useState(0)
   const [topConcern, setTopConcern] = useState('')
   const [positives, setPositives] = useState<string[]>([])
+  const [reportHistory, setReportHistory] = useState<any[]>([])
+  const [selectedReport, setSelectedReport] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [predLoading, setPredLoading] = useState(false)
   const [uploadLoading, setUploadLoading] = useState(false)
@@ -31,7 +33,7 @@ export default function Dashboard() {
     danger:'#ef4444',
     warning:'#f59e0b',
   }
-  useEffect(()=>{fetchMedicines()},[])
+  useEffect(()=>{fetchMedicines();fetchReports()},[])
   async function fetchMedicines(){
     setLoading(true)
     try{
@@ -40,6 +42,13 @@ export default function Dashboard() {
       setMedicines(d.medicines||[])
     }catch(e){console.error(e)}
     finally{setLoading(false)}
+  }
+  async function fetchReports(){
+    try{
+      const r=await fetch(`/api/reports?user_id=${TEST_USER}`)
+      const d=await r.json()
+      setReportHistory(d.reports||[])
+    }catch(e){console.error(e)}
   }
   async function handleUpload(e:React.ChangeEvent<HTMLInputElement>){
     const file=e.target.files?.[0]
@@ -53,7 +62,10 @@ export default function Dashboard() {
       fd.append('user_id',TEST_USER)
       const r=await fetch('/api/extract-report',{method:'POST',body:fd})
       const d=await r.json()
-      if(d.success)setUploadedReport(d)
+      if(d.success){
+        setUploadedReport(d)
+        fetchReports() // refresh history
+      }
       else alert('Error: '+d.error)
     }catch(e){alert('Upload failed')}
     finally{setUploadLoading(false)}
