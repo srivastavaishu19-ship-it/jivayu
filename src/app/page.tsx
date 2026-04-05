@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [medStatus, setMedStatus] = useState<{[key:string]:'taken'|'missed'}>({})
   const [medForm, setMedForm] = useState({name:'',dosage:'',frequency:'',condition_for:'',prescribed_by:''})
   const fileRef = useRef<HTMLInputElement>(null)
+  const cameraRef = useRef<HTMLInputElement>(null)
   const t = {
     bg: dark?'#080d1a':'#f4f6fb',
     surface: dark?'#111827':'#ffffff',
@@ -122,11 +123,16 @@ export default function Dashboard() {
               {healthScore>0&&<div style={{textAlign:'center',background:'rgba(74,222,128,0.1)',border:'1px solid rgba(74,222,128,0.2)',borderRadius:'14px',padding:'14px 22px'}}><div style={{fontSize:'48px',fontWeight:'900',color:t.accent,lineHeight:1}}>{healthScore}</div><div style={{fontSize:'11px',color:t.text2,marginTop:'4px'}}>Health Score</div></div>}
             </div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:'14px',marginBottom:'24px'}}>
-              <div onClick={()=>fileRef.current?.click()} style={{...card,border:`1.5px dashed ${dark?'#1a3d2a':'#86efac'}`,cursor:'pointer'}}>
+              <div style={{...card,border:`1.5px dashed ${dark?'#1a3d2a':'#86efac'}`}}>
                 <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png" style={{display:'none'}} onChange={handleUpload}/>
+                <input ref={cameraRef} type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={handleUpload}/>
                 <div style={{fontSize:'32px',marginBottom:'10px'}}>🔬</div>
                 <div style={{fontSize:'14px',fontWeight:'700',marginBottom:'4px'}}>Upload Lab Report</div>
-                <div style={{fontSize:'12px',color:t.text2}}>PDF or photo · Any Indian lab</div>
+                <div style={{fontSize:'12px',color:t.text2,marginBottom:'12px'}}>PDF, photo or take a picture</div>
+                <div style={{display:'flex',gap:'8px'}}>
+                  <button onClick={()=>fileRef.current?.click()} style={{flex:1,background:'rgba(74,222,128,0.1)',color:t.accent,border:'1px solid rgba(74,222,128,0.2)',borderRadius:'8px',padding:'8px',fontSize:'12px',cursor:'pointer',fontWeight:'600',fontFamily:'inherit'}}>📁 Upload</button>
+                  <button onClick={()=>cameraRef.current?.click()} style={{flex:1,background:'rgba(34,211,238,0.1)',color:t.cyan,border:'1px solid rgba(34,211,238,0.2)',borderRadius:'8px',padding:'8px',fontSize:'12px',cursor:'pointer',fontWeight:'600',fontFamily:'inherit'}}>📷 Camera</button>
+                </div>
                 {uploadLoading&&<div style={{color:t.accent,fontSize:'12px',marginTop:'8px'}}>🧠 Reading...</div>}
               </div>
               <div onClick={()=>setShowAddMed(true)} style={{...card,border:`1.5px dashed ${dark?'#2d1f4d':'#c4b5fd'}`,cursor:'pointer'}}>
@@ -175,10 +181,12 @@ export default function Dashboard() {
           <div>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px',flexWrap:'wrap',gap:'12px'}}>
               <div><h1 style={{fontSize:'22px',fontWeight:'800',marginBottom:'4px'}}>Lab Reports</h1><p style={{fontSize:'13px',color:t.text2}}>Upload any report — AI reads and explains instantly</p></div>
-              <button onClick={()=>fileRef.current?.click()} style={{background:t.accent,color:'#0a0f1e',border:'none',borderRadius:'10px',padding:'10px 18px',fontWeight:'700',cursor:'pointer',fontSize:'13px',fontFamily:'inherit'}}>
+              <div style={{display:'flex',gap:'8px'}}>
                 <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png" style={{display:'none'}} onChange={handleUpload}/>
-                {uploadLoading?'🧠 Reading...':'+ Upload Report'}
-              </button>
+                <input ref={cameraRef} type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={handleUpload}/>
+                <button onClick={()=>cameraRef.current?.click()} style={{background:'rgba(34,211,238,0.1)',color:t.cyan,border:'1px solid rgba(34,211,238,0.2)',borderRadius:'10px',padding:'10px 16px',fontWeight:'700',cursor:'pointer',fontSize:'13px',fontFamily:'inherit'}}>📷 Camera</button>
+                <button onClick={()=>fileRef.current?.click()} style={{background:t.accent,color:'#0a0f1e',border:'none',borderRadius:'10px',padding:'10px 18px',fontWeight:'700',cursor:'pointer',fontSize:'13px',fontFamily:'inherit'}}>{uploadLoading?'🧠 Reading...':'📁 Upload File'}</button>
+              </div>
             </div>
             {uploadLoading&&<div style={{...card,textAlign:'center',padding:'60px 20px'}}><div style={{fontSize:'48px',marginBottom:'16px'}}>🧠</div><div style={{fontSize:'16px',fontWeight:'700',color:t.accent}}>Claude is reading your report...</div><div style={{fontSize:'12px',color:t.text2,marginTop:'6px'}}>15-20 seconds</div></div>}
             {uploadedReport&&!uploadLoading&&(
@@ -213,10 +221,14 @@ export default function Dashboard() {
               </div>
             )}
             {!uploadedReport&&!uploadLoading&&(
-              <div onClick={()=>fileRef.current?.click()} style={{...card,textAlign:'center',padding:'70px 20px',border:`1.5px dashed ${t.border}`,cursor:'pointer'}}>
+              <div style={{...card,textAlign:'center',padding:'70px 20px',border:`1.5px dashed ${t.border}`}}>
                 <div style={{fontSize:'48px',marginBottom:'14px'}}>🔬</div>
                 <div style={{fontSize:'17px',fontWeight:'700',marginBottom:'8px'}}>Upload your first report</div>
-                <div style={{fontSize:'13px',color:t.text2}}>PDF or photo · Hindi or English · Any Indian lab format</div>
+                <div style={{fontSize:'13px',color:t.text2,marginBottom:'20px'}}>PDF or photo · Hindi or English · Any Indian lab</div>
+                <div style={{display:'flex',gap:'10px',justifyContent:'center',flexWrap:'wrap'}}>
+                  <button onClick={()=>fileRef.current?.click()} style={{background:'rgba(74,222,128,0.1)',color:t.accent,border:'1px solid rgba(74,222,128,0.2)',borderRadius:'10px',padding:'10px 20px',fontSize:'13px',cursor:'pointer',fontWeight:'600',fontFamily:'inherit'}}>📁 Upload PDF or Photo</button>
+                  <button onClick={()=>cameraRef.current?.click()} style={{background:'rgba(34,211,238,0.1)',color:t.cyan,border:'1px solid rgba(34,211,238,0.2)',borderRadius:'10px',padding:'10px 20px',fontSize:'13px',cursor:'pointer',fontWeight:'600',fontFamily:'inherit'}}>📷 Take Photo with Camera</button>
+                </div>
               </div>
             )}
           </div>
