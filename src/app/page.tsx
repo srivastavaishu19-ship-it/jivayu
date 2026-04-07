@@ -244,6 +244,53 @@ export default function Dashboard() {
               </div>
             )}
           </div>
+
+            {/* REPORT HISTORY */}
+            {reportHistory.length>0&&(
+              <div style={{marginTop:'24px'}}>
+                <div style={{fontSize:'11px',fontWeight:'700',color:t.text2,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:'12px'}}>📋 All Reports ({reportHistory.length})</div>
+                <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+                  {reportHistory.map((rep:any)=>{
+                    const abnormal=(rep.parameters||[]).filter((p:any)=>p.flag&&p.flag!=='normal').length
+                    const total=(rep.parameters||[]).length
+                    const date=new Date(rep.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})
+                    const isSelected=selectedReport?.id===rep.id
+                    return(
+                      <div key={rep.id}>
+                        <div onClick={()=>setSelectedReport(isSelected?null:rep)} style={{...card,cursor:'pointer',border:isSelected?`1px solid ${t.accent}`:`1px solid ${t.border}`}}>
+                          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+                            <div style={{width:'42px',height:'42px',background:abnormal>0?'rgba(239,68,68,0.1)':'rgba(74,222,128,0.1)',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px',flexShrink:0}}>{abnormal>0?'⚠️':'✅'}</div>
+                            <div style={{flex:1,minWidth:0}}>
+                              <div style={{fontSize:'14px',fontWeight:'700',marginBottom:'2px'}}>{rep.report_name||'Lab Report'}</div>
+                              <div style={{fontSize:'12px',color:t.text2}}>{rep.lab_name||'Lab'} · {date}</div>
+                            </div>
+                            <div style={{display:'flex',gap:'6px',alignItems:'center',flexShrink:0}}>
+                              {abnormal>0&&<span style={{background:'rgba(239,68,68,0.1)',color:t.danger,padding:'3px 9px',borderRadius:'20px',fontSize:'10px',fontWeight:'700'}}>{abnormal} Abnormal</span>}
+                              <span style={{background:'rgba(74,222,128,0.1)',color:t.accent,padding:'3px 9px',borderRadius:'20px',fontSize:'10px',fontWeight:'700'}}>{total} Tests</span>
+                              <span style={{color:t.text2,fontSize:'14px'}}>{isSelected?'▲':'▼'}</span>
+                            </div>
+                          </div>
+                        </div>
+                        {isSelected&&(
+                          <div style={{background:t.surface,border:`1px solid ${t.accent}`,borderTop:'none',borderRadius:'0 0 16px 16px',padding:'16px',marginTop:'-4px'}}>
+                            <div style={{display:'flex',flexDirection:'column',gap:'5px'}}>
+                              {(rep.parameters||[]).map((p:any,i:number)=>(
+                                <div key={i} style={{display:'grid',gridTemplateColumns:'1fr auto auto auto',alignItems:'center',gap:'10px',padding:'8px 12px',background:t.surface2,borderRadius:'8px'}}>
+                                  <div><span style={{fontSize:'12px',fontWeight:'500'}}>{p.name}</span><span style={{fontSize:'10px',color:t.text2,marginLeft:'4px'}}>{p.unit}</span></div>
+                                  <div style={{fontSize:'13px',fontWeight:'700'}}>{p.value}</div>
+                                  <div style={{fontSize:'10px',color:t.text2}}>{p.reference_min}–{p.reference_max}</div>
+                                  <div style={{fontSize:'10px',fontWeight:'700',padding:'2px 8px',borderRadius:'20px',background:`${fc(p.flag||'normal')}18`,color:fc(p.flag||'normal'),minWidth:'52px',textAlign:'center'}}>{p.flag||'–'}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
         )}
 
         {/* MEDICINES */}
