@@ -245,7 +245,6 @@ export default function Dashboard() {
             )}
           </div>
 
-            {/* REPORT HISTORY */}
             {reportHistory.length>0&&(
               <div style={{marginTop:'24px'}}>
                 <div style={{fontSize:'11px',fontWeight:'700',color:t.text2,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:'12px'}}>📋 All Reports ({reportHistory.length})</div>
